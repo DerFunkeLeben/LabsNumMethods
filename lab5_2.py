@@ -8,9 +8,13 @@ def f(x):
     return sqrt(x) * (sin(3 * x)) ** 2
 
 
+# оценка погрешности по правилу Рунге
+
 def Runge(h):
     return (integral_miln(h / 2) - integral_miln(h)) / (2 ** 6 - 1)
 
+
+# вычисление интеграла по методу Милна с шагом h
 
 def integral_miln(h):
     n = int(numpy.ceil((b - a) / h))
@@ -29,12 +33,19 @@ def integral_miln(h):
     return result * h / 90
 
 
+# вычисление интеграла по методу Милна с точностью epsilon
+# оценка погрешности по Рунге
+# уточнение по Рунге
+# погрешность с учетом уточнения
+
 def miln():
+    # подбираем шаг h, при котором будет достигнута точность epsilon
     h = (b - a) / 2
     while abs(Runge(h)) > epsilon:
         h /= 2
     h = h / 2
 
+    # число разбиений n - округляем в большую сторону
     n = int(numpy.ceil((b - a) / h))
     I_h = integral_miln(h)
     I_h_2 = integral_miln(h / 2)
@@ -52,6 +63,7 @@ def miln():
 a = 0
 b = 10
 epsilon = 10 ** (-12)
+# вычисление интеграла с помощью пакетных средств
 integral = scipy.integrate.quad(f, a, b, epsabs=epsilon, epsrel=epsilon)[0]
 
 print('\nАналитическое значение интеграла: I =', integral, '\n')

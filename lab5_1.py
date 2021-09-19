@@ -10,12 +10,16 @@ def f(x):
     return result
 
 
+# производная функции в точке x
+
 def df_dx(x):
     result = 0
     for i in range(1, len(coefs)):
         result += coefs[i] * i * x ** (i - 1)
     return result
 
+
+# нахождение интеграла по формуле левых прямоугольников с заданным шагом h и числом разбиений n
 
 def integral_left_rect(h, n):
     f_i = []
@@ -27,7 +31,10 @@ def integral_left_rect(h, n):
     return result * h
 
 
+# нахождение интеграла по формуле Милна с заданным шагом h и числом разбиений n
+
 def integral_miln(h, n):
+    # берем только граничные точки
     x = [a, b]
     result = 0
     for i in range(1, n + 1):
@@ -39,9 +46,14 @@ def integral_miln(h, n):
     return result * h / 90
 
 
+# функция, выводящая результаты, относящиеся к формуле левых прямоугольников
+
 def left_rect():
+    # максимум производной на [a, b]
     M1 = -scipy.optimize.minimize_scalar(lambda x: -numpy.abs(df_dx(x)), bounds=[a, b], method='bounded').fun
+    # оценка шага h
     h_estimate = 2 * epsilon / (M1 * (b - a))
+    # число разбиений n - округляем в большую сторону
     n = int(numpy.ceil((b - a) / h_estimate))
     h = (b - a) / n
     I = integral_left_rect(h, n)
@@ -53,7 +65,11 @@ def left_rect():
     print()
 
 
+# функция, выводящая результаты, относящиеся к формуле Милна
+
 def miln():
+    # максимум шестой производной равен нуля для данного многочлена
+    # поэтому отрезок не разбиваем
     n = 1
     h = b - a
     I = integral_miln(h, n)
@@ -64,6 +80,8 @@ def miln():
     print('R =', 0)
     print()
 
+
+# функция,вычисляющая интеграл и выводящая результаты, относящиеся к формуле Гаусса
 
 def gauss():
     n = 3
