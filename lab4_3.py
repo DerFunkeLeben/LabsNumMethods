@@ -1,3 +1,4 @@
+# %%
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -77,3 +78,5 @@ plt.show()
 eco_step(10)
 eco_step(8)
 eco_step(6)
+
+# %%
