@@ -4,13 +4,14 @@ import scipy
 import math
 from prettytable import PrettyTable
 from sympy import *
+import matplotlib.pyplot as plt
 
 
 f = lambda x: math.sqrt(x) * (math.sin(3 * x)) ** 2
 df_central = lambda x, h: (f(x + h) - f(x - h)) / 2 / h
 df_right = lambda x, h: (f(x + h) - f(x)) / h
 d2f_left = (
-    lambda x, h: (2 * f(x) - 5 * f(x - h) + 4 * f(x - 2 * h) - f(x + 2 * h)) / 12 / h
+    lambda x, h: (2 * f(x) - 5 * f(x - h) + 4 * f(x - 2 * h) - f(x - 3 * h)) / h / h
 )
 df_error = lambda df_value, c, n: abs(df_value - df(c, n))
 
@@ -84,6 +85,42 @@ def count_arrays(c):
         "\n\tgot with step h =",
         h[index_2l],
     )
+
+    fig, ax = plt.subplots()
+    plt.plot(
+        numpy.log10(h),
+        numpy.log10(df_right_errors),
+        "o-b",
+        label="Right derivative",
+        lw=2,
+        mec="b",
+        mew=2,
+        ms=5,
+    )
+    plt.plot(
+        numpy.log10(h),
+        numpy.log10(d2f_left_errors),
+        "o-g",
+        label="Left second derivative",
+        lw=2,
+        mec="g",
+        mew=2,
+        ms=5,
+    )
+    plt.plot(
+        numpy.log10(h),
+        numpy.log10(df_central_errors),
+        "o-r",
+        label="Central derivative",
+        lw=2,
+        mec="r",
+        mew=2,
+        ms=5,
+    )
+    plt.legend()
+    ax.set_xlabel('h')
+    ax.set_ylabel('error')
+    plt.show()
 
     return table
 
