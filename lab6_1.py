@@ -1,6 +1,5 @@
 # %%
 import numpy
-import scipy
 import math
 from prettytable import PrettyTable
 from sympy import *
