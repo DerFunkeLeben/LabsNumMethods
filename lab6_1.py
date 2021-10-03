@@ -5,16 +5,26 @@ from prettytable import PrettyTable
 from sympy import *
 import matplotlib.pyplot as plt
 
-
+# функция из задачи 5.2
 f = lambda x: math.sqrt(x) * (math.sin(3 * x)) ** 2
+
+# формула центральной разностной производной
 df_central = lambda x, h: (f(x + h) - f(x - h)) / 2 / h
+
+# формула правой разностной производной
 df_right = lambda x, h: (f(x + h) - f(x)) / h
+
+# формула односторонней левой производной
+# для вычисления второй производной
 d2f_left = (
     lambda x, h: (2 * f(x) - 5 * f(x - h) + 4 * f(x - 2 * h) - f(x - 3 * h)) / h / h
 )
+
+# погрешность вычисления производной
 df_error = lambda df_value, c, n: abs(df_value - df(c, n))
 
-
+# функция возвращает значение производной порядка n в точке t
+# производная вычисляется с помощью встроенной библиотеки sympy
 def df(t, n):
     x = Symbol("x")
     y = sqrt(x) * (sin(3 * x)) ** 2
@@ -34,6 +44,7 @@ def count_arrays(c):
     df_central_errors = []
     d2f_left_errors = []
 
+    # заполнение всех массивов, указанных в задаче
     for k in range(1, 16):
         h.append(10 ** (-k))
 
@@ -54,6 +65,7 @@ def count_arrays(c):
     table.add_column("Left second derivative", d2f_left_values)
     table.add_column("Left second der. error", d2f_left_errors)
 
+    # индексы элементов массива, в которых погрешность минимальна
     index_r = numpy.argmin(df_right_errors)
     index_c = numpy.argmin(df_central_errors)
     index_2l = numpy.argmin(d2f_left_errors)
@@ -85,6 +97,7 @@ def count_arrays(c):
         h[index_2l],
     )
 
+    # построение графиков погрешностей
     fig, ax = plt.subplots()
     plt.plot(
         numpy.log10(h),
