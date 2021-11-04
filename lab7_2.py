@@ -10,7 +10,7 @@ def stiff_coef(matrix, matrixName):
     l = LA.eigvals(matrix)
     re_l = numpy.real(l)
     s = max(numpy.abs(re_l)) / min(numpy.abs(re_l))
-    h_euler_stiff = min(2 / numpy.abs(re_l))
+    h_euler_stiff = min(2 / numpy.abs(l))
 
     print("Eigenvalues are: ")
     for i in range(len(l)):
