@@ -1,6 +1,6 @@
 # %%
 import numpy
-from numpy import linalg as LA, ubyte
+from numpy import linalg as LA
 import matplotlib.pyplot as plt
 
 # рассуждения на тему собственных значений матрицы, устойчивости решений, жесткости системы
