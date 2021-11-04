@@ -1,5 +1,6 @@
 *.exe
 *.pdb
+*.pdf
 /.vs
 /.vscode
 /.vs/
