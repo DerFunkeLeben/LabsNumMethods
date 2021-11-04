@@ -27,7 +27,7 @@ def Euler_modified(y, t, h):
 # расчет числа точек N для шага h
 get_n = lambda h: int(numpy.ceil((t_n - t_0) / h))
 
-# получить массив решений выбранным методом с шагом h
+# получить массив решений выбранным методом с шагом h для двух компонент u и v
 def get_y_data(h, Method):
     n = get_n(h)
     t_data = numpy.linspace(t_0, t_n, n + 1)
