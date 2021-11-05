@@ -42,12 +42,14 @@ def Euler_implicit(y, matrix, h=0.01):
     invMatrix = LA.inv(E - h * matrix)
     return invMatrix * y
 
+# задача Коши
+dy = lambda y, matrix: numpy.array(matrix * y)
 
 # формула усовершенствованного метода Эйлера
 def Euler_modified(y, matrix, h):
-    k1 = matrix * y * h
-    k2 = (matrix + h / 2) * (y + k1 / 2) * h
-    return y + k2
+    y_predict = y + h / 2 * dy(y, matrix)
+    y_correct = y + h * dy(y_predict, matrix)
+    return y_correct
 
 
 # расчет числа точек N для шага h
