@@ -1,6 +1,5 @@
 # %%
 import numpy
-import threading
 import matplotlib.pyplot as plt
 
 R_ = lambda R0, k, i: R0 * (1 + k * i ** 2)
@@ -8,11 +7,15 @@ R_ = lambda R0, k, i: R0 * (1 + k * i ** 2)
 # задача Коши
 def f(y, t):
     u, v = y
-    du = t * (u ** 2) * numpy.sqrt(v)
-    dv = numpy.sqrt(u) + numpy.sqrt(v)
+    # замена u = i
+    # замена v = di/dt
+    R = R_(R0, k, u)
+    du = v
+    dv = (-R * v - u / C + U * w * numpy.cos(w * t)) / L
     return numpy.array([du, dv])
 
 
+# метод Рунге-Кутты 3 порядка
 def Runge_Kutta_3(y, t, h):
     k1 = f(y, t) * h
     k2 = f(y + k1 / 2, t + h / 2) * h
@@ -22,6 +25,7 @@ def Runge_Kutta_3(y, t, h):
     return y
 
 
+# метод Адамса-Башфорта 3 порядка
 def Adams_Bashforth(y, t, i, h):
     f_1 = f(y[i - 1], t[i - 1])
     f_2 = f(y[i - 2], t[i - 2])
@@ -47,6 +51,8 @@ def Runge(y_data_h, y_data_2h):
     return max(max(r_u_data), max(r_v_data))
 
 
+# получить массив решений по методу Адамса-Башфорта 3 порядка
+# с помощью стартовых решений по методу Рунге-Кутты 3 порядка
 def get_y_data(h, y0):
     n = get_n(h)
     t_data = numpy.linspace(t_0, t_n, n)
@@ -62,51 +68,56 @@ def get_y_data(h, y0):
     return numpy.array([u, v])
 
 
-def show_graph(h, y_data):
-    plt.subplots()
+# построение графика
+def show_graph(h, y_data, label):
+    fig, axs = plt.subplots()
     n = get_n(h)
     t_data = numpy.linspace(t_0, t_n, n)
-    plt.plot(t_data, y_data, label="Adams Bashforth")
+    plt.plot(t_data, y_data, label="Adams Bashforth " + label)
     plt.legend()
+    # axs.spines['bottom'].set_position('center')
     plt.show()
 
 
+# адаптивная процедура поиска оптимального шага
+# если точность не достигнута - уменьшаем шаг в 2 раза
+# если точность превышает заданную на порядок - увеличиваем шаг в 1.5 раза
+# иначе - нашли оптимальный шаг
 def get_optimal_h(h, y0):
     y_data_h = get_y_data(h, y0)
     y_data_2h = get_y_data(2 * h, y0)
     err = Runge(y_data_h, y_data_2h)
     if err > epsilon:
-        get_optimal_h(h / 2, y0)
-    elif err < epsilon * 10:
-        get_optimal_h(3 * h / 2, y0)
+        return get_optimal_h(h / 2, y0)
+    elif err < epsilon / 10:
+        return get_optimal_h(1.5 * h, y0)
     else:
         return h
 
-L = 1
-R0 = 2
-C = 0.001
-f_ = 10 ** 6
-k = 8 * 10 ** 10
+
+# исходные данные
+L = 50
+R0 = 3
+C = 0.047
+f_ = 2 * 10 ** 5
+k = 5 * 10 ** 10
 w = 2 * numpy.pi * f_
 U = 1
 
-i = 5
-
-R = R_(R0, k, i)
-
-epsilon = 0.0001
+epsilon = 10 ** -9
 t_0 = 0
 t_n = 1
 h = 0.01
-y0 = numpy.array([1, 1])
+y0 = numpy.array([0, 0])
 
 
 y_data_h = get_y_data(h, y0)
 y_data_2h = get_y_data(2 * h, y0)
 
-show_graph(h, y_data_h[0])
-show_graph(h, y_data_h[1])
+show_graph(h, y_data_h[0], "i(t)")
 
-print(get_optimal_h(h, y0))
+# h_opt = get_optimal_h(h, y0)
+# print("Оптимальный шаг: ", h_opt)
+
 
 # %%
