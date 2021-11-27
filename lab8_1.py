@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import scipy.linalg as LA
 from sympy import DiracDelta, integrate
 from sympy.core.symbol import Symbol
-from sympy.functions.elementary.piecewise import Undefined
 
 f = lambda x: -8 * x ** 2 + 5 * x + 1
 q = lambda x: x / (x + 3)
@@ -46,10 +45,10 @@ def f_i(x, h, mode):
         elif mode == "experiment_b":
             return 0 if t <= x_jump or t >= x_jump_2 else F
         else:
-            return Undefined
+            return 0
 
     if mode == "experiment_c":
-        c = -80 # мощность источника
+        c = -80  # мощность источника
         x0 = 2.4
         z = Symbol("z")
         f = c * integrate(DiracDelta(z - x0), (z, x - h / 2, x + h / 2))
@@ -61,18 +60,14 @@ def f_i(x, h, mode):
     # если на отрезке [x[i-1/2];x[i+1/2]] есть точка разрыва функции,
     # необходимо обработать отдельно эти случай,
     # так как функция не интегрируема на этом отрезке
-    if x + h / 2 >= x_jump and x - h / 2 < x_jump:
+    if x + h / 2 >= x_jump > x - h / 2:
         f_middle = definite_integral(x_jump)
-        f_1 = (f_middle - f_left) / h
-        f_2 = (f_right - f_middle) / h
-        return f_1 if x + h / 2 - x_jump > x_jump - x - h / 2 else f_2
+        return (f_middle - f_left) / h
 
     if mode == "experiment_a" or mode == "experiment_b":
-        if x + h / 2 >= x_jump_2 and x - h / 2 < x_jump_2:
+        if x + h / 2 >= x_jump_2 > x - h / 2:
             f_middle = definite_integral(x_jump_2)
-            f_1 = (f_middle - f_left) / h
-            f_2 = (f_right - f_middle) / h
-            return f_1 if x + h / 2 - x_jump_2 > x_jump_2 - x - h / 2 else f_2
+            return (f_middle - f_left) / h
 
     return (f_right - f_left) / h
 
@@ -195,7 +190,6 @@ show_graph_test(h, u_data)
 u_data = solve(h, "main")
 u_data_2 = solve(h / 2, "main")
 show_graph_main(h, u_data, u_data_2)
-
 
 u_data_a = solve(h, "experiment_a")
 u_data_b = solve(h, "experiment_b")
