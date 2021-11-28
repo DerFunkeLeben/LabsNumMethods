@@ -19,9 +19,9 @@ def create_b(A, m, x_i):
     return np.dot(A, np.array(x))
 
 
-def solve_conjugate_gradient(A, b, epsilon=np.power(10., -9)):
-    x = np.zeros(np.size(b))
-    residual_0 = np.abs(np.dot(A, x) - b)
+def solve_conjugate_gradient(A, B, epsilon=np.power(10., -9)):
+    x = np.zeros(np.size(B))
+    residual_0 = np.abs(np.dot(A, x) - B)
     descent_direction_n = residual_0
     residual_n = residual_0
 
