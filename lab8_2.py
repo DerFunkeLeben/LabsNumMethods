@@ -160,7 +160,7 @@ def show_graph(h, u_data, mode, label):
     plt.figure()
     ax = plt.axes(projection="3d")
     ax.set_title(label + " " + mode)
-    ax.view_init(10, 70)
+    ax.view_init(60, 70)
     ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap="inferno")
     # inferno # twilight_shifted
     plt.show()
@@ -210,11 +210,11 @@ h = 1 / 4
 epsilon = 0.001
 
 
-u_test_1 = solve(h, "test_1")
-show_graph(h, 0, "test_1", "Exact solution")
-show_graph(h, u_test_1, "test_1", "Approx solution")
-show_graph(h, u_test_1, "test_1", "Error")
-print_table(u_test_1)
+# u_test_1 = solve(h, "test_1")
+# show_graph(h, 0, "test_1", "Exact solution")
+# show_graph(h, u_test_1, "test_1", "Approx solution")
+# show_graph(h, u_test_1, "test_1", "Error")
+# print_table(u_test_1)
 
 u_test_2 = solve(h, "test_2")
 show_graph(h, 0, "test_2", "Exact solution")
