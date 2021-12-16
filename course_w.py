@@ -87,6 +87,14 @@ def show_graph(h, y_data, label):
     axs.spines["bottom"].set_position("center")
     plt.show()
 
+# динамика поиска оптимального шага
+def show_graph_h(h_data):
+    fig, axs = plt.subplots()
+    x_data = numpy.arange(len(h_data))
+    plt.plot(x_data, numpy.log10(h_data), label="Динамика поиска оптимального шага")
+    plt.legend()
+    plt.show()
+
 
 # адаптивная процедура поиска оптимального шага
 # если точность не достигнута - уменьшаем шаг в 2 раза
@@ -96,6 +104,7 @@ def get_optimal_h(h, y0):
     y_data_h = get_y_data(h, y0)
     y_data_2h = get_y_data(2 * h, y0)
     err = Runge(y_data_h, y_data_2h)
+    h_dynamics.append(h)
     print(
         "Error:",
         "{:.2e}".format(err),
@@ -105,11 +114,12 @@ def get_optimal_h(h, y0):
     if err > EPSILON:
         print("Decreasing...\n")
         return get_optimal_h(h / 2, y0)
-    # elif err < EPSILON / 10:
-    #     print("Increasing...\n")
-    #     return get_optimal_h(1.5 * h, y0)
+    elif err < EPSILON / 10:
+        print("Increasing...\n")
+        return get_optimal_h(1.5 * h, y0)
     else:
         show_graph(h, y_data_h[0], "i(t)")
+        show_graph_h(h_dynamics)
         return h, err
 
 
@@ -129,6 +139,7 @@ y0 = numpy.array([0, 0], dtype=numpy.float64)
 t_0 = 0
 t_n = data.period * 2  # охватываем два периода колебаний
 h = (t_n - t_0) / 100
+h_dynamics = []
 
 h_opt, err = get_optimal_h(h, y0)
 print("Оптимальный шаг: ", "{:.2e}".format(h_opt))
